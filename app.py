@@ -100,10 +100,12 @@ SYSTEM_PROMPT = (
 )
 
 def ask_gemini(contents):
-for m in ["gemini-3.5-flash-lite", "gemini-2.5-flash", "gemini-2.5-flash-lite"]:
+models = ["gemini-3.5-flash-lite", "gemini-2.5-flash", "gemini-2.5-flash-lite"]
+    for m in models:
         try:
             r = client.models.generate_content(
-                model=m, contents=contents,
+                model=m,
+                contents=contents,
                 config=types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT)
             )
             return r.text
