@@ -131,7 +131,7 @@ for r in rows:
     else:
         st.markdown(f'<div class="msg-row-other"><div class="bubble-other"><div class="sender-tag">{r["sender"]}</div>{safe}<div class="msg-meta">{t}</div></div></div>', unsafe_allow_html=True)
 
-with st.expander("📎 Rasm 📷 / 🎤 Ovoz yuborish"):
+with st.expander("📎 Rasm 📷 / 🎤 Ovoz yuborish", expanded=False):
     uploaded_file = st.file_uploader("Rasm", type=["png", "jpg", "jpeg", "webp"], label_visibility="collapsed")
     audio_value = st.audio_input("Ovoz", label_visibility="collapsed")
 
