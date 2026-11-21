@@ -40,6 +40,11 @@ st.markdown("""
 }
 .wa-name { font-size: 16px; font-weight: 700; color: #111b21; margin: 0; }
 .wa-sub { font-size: 11px; color: #00a884; margin: 0; }
+.call-btn {
+    text-decoration: none; background-color: #E7FCE3; color: #008069;
+    padding: 6px 10px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    border: 1px solid #25D366; margin-left: 6px;
+}
 .msg-row-me { display: flex; justify-content: flex-end; margin-bottom: 8px; }
 .msg-row-other { display: flex; justify-content: flex-start; margin-bottom: 8px; }
 .bubble-me {
@@ -61,10 +66,13 @@ st.markdown("""
         <div class="wa-avatar">007</div>
         <div>
             <p class="wa-name">Shuhrat Family • AI</p>
-            <p class="wa-sub">Shuhrat aka, Kelin oyi, Asadbek, AI 🤖</p>
+            <p class="wa-sub">● Jonli • Oila va AI 🤖</p>
         </div>
     </div>
-    <div style="color:#54656f;font-size:16px;">📹 📞</div>
+    <div>
+        <a class="call-btn" href="https://jit.si" target="_blank">📞 Audio</a>
+        <a class="call-btn" href="https://jit.si" target="_blank">📹 Video</a>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -92,7 +100,7 @@ SYSTEM_PROMPT = (
 )
 
 def ask_gemini(contents):
-    for m in ["gemini-3.5-flash-lite", "gemini-2.5-flash", "gemini-2.5-flash-lite"]:
+for m in ["gemini-3.5-flash-lite", "gemini-2.5-flash", "gemini-2.5-flash-lite"]:
         try:
             r = client.models.generate_content(
                 model=m, contents=contents,
@@ -102,25 +110,23 @@ def ask_gemini(contents):
         except Exception:
             time.sleep(1)
     return "Server biroz band, birozdan keyin urinib ko'ring."
-c1, c2 = st.columns([3, 1])
-with c1:
-    st.caption(f"👤 Siz: {st.session_state.auth_user} • AI chaqirish uchun xabarga @ai yozing")
-with c2:
-    if st.button("🔄 Yangilash"):
-        st.rerun()
 
-rows = supabase.table("family_messages").select("*").order("id", desc=False).limit(60).execute().data
+st.caption(f"👤 Siz: {st.session_state.auth_user} • Jonli suhbat uchun tepada 📞 Audio yoki 📹 Video ni bosing • AI uchun @ai yozing")
 
-if not rows:
-    st.markdown('<div class="msg-row-other"><div class="bubble-other"><div class="sender-tag">Shuhrat AI 🤖</div>Assalomu alaykum! Oilaviy guruh tayyor. Bir-biringizga yozing yoki <b>@ai</b> deb AI tarjimonga murojaat qiling!</div></div>', unsafe_allow_html=True)
+@st.fragment(run_every="3s")
+def live_chat_messages():
+    rows = supabase.table("family_messages").select("*").order("id", desc=False).limit(60).execute().data
+    if not rows:
+        st.markdown('<div class="msg-row-other"><div class="bubble-other"><div class="sender-tag">Shuhrat AI 🤖</div>Assalomu alaykum! Oilaviy guruh tayyor. Yangi xabarlar avtomatik 3 soniyada chiqadi!</div></div>', unsafe_allow_html=True)
+    for r in rows:
+        t = r["created_at"][11:16] if r.get("created_at") else ""
+        safe = r["content"].replace("\n", "<br>")
+        if r["sender"] == st.session_state.auth_user:
+            st.markdown(f'<div class="msg-row-me"><div class="bubble-me">{safe}<div class="msg-meta">{t} <span class="ticks">✓✓</span></div></div></div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="msg-row-other"><div class="bubble-other"><div class="sender-tag">{r["sender"]}</div>{safe}<div class="msg-meta">{t}</div></div></div>', unsafe_allow_html=True)
 
-for r in rows:
-    t = r["created_at"][11:16] if r.get("created_at") else ""
-    safe = r["content"].replace("\n", "<br>")
-    if r["sender"] == st.session_state.auth_user:
-        st.markdown(f'<div class="msg-row-me"><div class="bubble-me">{safe}<div class="msg-meta">{t} <span class="ticks">✓✓</span></div></div></div>', unsafe_allow_html=True)
-    else:
-        st.markdown(f'<div class="msg-row-other"><div class="bubble-other"><div class="sender-tag">{r["sender"]}</div>{safe}<div class="msg-meta">{t}</div></div></div>', unsafe_allow_html=True)
+live_chat_messages()
 
 with st.expander("📎 Rasm 📷 / 🎤 Ovoz yuborish"):
     uploaded_file = st.file_uploader("Rasm", type=["png", "jpg", "jpeg", "webp"], label_visibility="collapsed")
