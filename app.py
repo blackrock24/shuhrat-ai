@@ -111,7 +111,7 @@ def ask_gemini(contents):
             time.sleep(1)
     return "Server biroz band, birozdan keyin urinib ko'ring."
 
-c1, c2 = st.columns()
+c1, c2 = st.columns(2)
 with c1:
     st.caption(f"👤 {st.session_state.auth_user} • AI uchun @ai yozing")
 with c2:
