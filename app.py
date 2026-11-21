@@ -118,8 +118,8 @@ with c2:
     if st.button("🔄 Yangilash"):
         st.rerun()
 
-rows = supabase.table("family_messages").select("*").order("id", desc=False).limit(60).execute().data
-
+rows = supabase.table("family_messages").select("*").order("id", desc=True).limit(50).execute().data
+rows = list(reversed(rows))
 if not rows:
     st.markdown('<div class="msg-row-other"><div class="bubble-other"><div class="sender-tag">Shuhrat AI 🤖</div>Assalomu alaykum! Oilaviy guruh tayyor.</div></div>', unsafe_allow_html=True)
 
