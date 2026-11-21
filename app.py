@@ -14,6 +14,7 @@ st.set_page_config(page_title="Shuhrat AI", page_icon="💬", layout="centered")
 st.markdown("""
 <style>
 #MainMenu, footer, header { visibility: hidden; }
+[data-testid="stToolbar"], [data-testid="stStatusWidget"], [data-testid="manage-app-button"], .stAppDeployButton, viewer-badge, ._profileContainer_gzau3_53, ._container_gzau3_1 { display: none !important; }
 .block-container {
     max-width: 480px !important;
     padding: 0.5rem 0.6rem 5rem 0.6rem !important;
