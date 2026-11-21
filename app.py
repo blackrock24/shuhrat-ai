@@ -19,7 +19,7 @@ st.markdown("""
 #MainMenu, footer, header { visibility: hidden; }
 .block-container {
     max-width: 480px !important;
-    padding: 0.5rem 0.6rem 7rem 0.6rem !important;
+    padding: 0.5rem 0.6rem 5rem 0.6rem !important;
     background-color: #EFEAE2;
     background-image: radial-gradient(#d5cec2 0.8px, transparent 0.8px);
     background-size: 16px 16px;
@@ -131,17 +131,23 @@ for r in rows:
     else:
         st.markdown(f'<div class="msg-row-other"><div class="bubble-other"><div class="sender-tag">{r["sender"]}</div>{safe}<div class="msg-meta">{t}</div></div></div>', unsafe_allow_html=True)
 
-prompt = st.chat_input("😊 Xabar yozing (AI uchun @ai qo'shing)...")
+with st.form("send_msg_form", clear_on_submit=True):
+    col_in, col_btn = st.columns([4, 1])
+    with col_in:
+        prompt = st.text_input("Xabar", placeholder="😊 Xabar yozing (AI uchun @ai)...", label_visibility="collapsed")
+    with col_btn:
+        submitted = st.form_submit_button("➤")
 
 with st.expander("📎 Rasm 📷 / 🎤 Ovoz yuborish", expanded=False):
     uploaded_file = st.file_uploader("Rasm", type=["png", "jpg", "jpeg", "webp"], label_visibility="collapsed")
     audio_value = st.audio_input("Ovoz", label_visibility="collapsed")
+    media_send = st.button("Media yuborish ✅")
 
-if prompt or audio_value or uploaded_file:
-    msg_text = prompt if prompt else ("🎤 Ovozli xabar yuborildi" if audio_value else f"📷 Rasm yuborildi: {uploaded_file.name}")
+if (submitted and prompt.strip()) or (media_send and (audio_value or uploaded_file)):
+    msg_text = prompt.strip() if (submitted and prompt.strip()) else ("🎤 Ovozli xabar yuborildi" if audio_value else f"📷 Rasm yuborildi: {uploaded_file.name}")
     supabase.table("family_messages").insert({"sender": st.session_state.auth_user, "content": msg_text}).execute()
 
-    if (prompt and "@ai" in prompt.lower()) or audio_value or uploaded_file:
+    if (prompt and "@ai" in prompt.lower()) or (media_send and (audio_value or uploaded_file)):
         contents = []
         if uploaded_file:
             contents.append(types.Part.from_bytes(data=uploaded_file.getvalue(), mime_type=uploaded_file.type))
