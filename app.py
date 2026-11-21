@@ -19,7 +19,7 @@ st.markdown("""
 #MainMenu, footer, header { visibility: hidden; }
 .block-container {
     max-width: 480px !important;
-    padding: 0.5rem 0.6rem 6rem 0.6rem !important;
+    padding: 0.5rem 0.6rem 7rem 0.6rem !important;
     background-color: #EFEAE2;
     background-image: radial-gradient(#d5cec2 0.8px, transparent 0.8px);
     background-size: 16px 16px;
@@ -131,11 +131,11 @@ for r in rows:
     else:
         st.markdown(f'<div class="msg-row-other"><div class="bubble-other"><div class="sender-tag">{r["sender"]}</div>{safe}<div class="msg-meta">{t}</div></div></div>', unsafe_allow_html=True)
 
+prompt = st.chat_input("😊 Xabar yozing (AI uchun @ai qo'shing)...")
+
 with st.expander("📎 Rasm 📷 / 🎤 Ovoz yuborish", expanded=False):
     uploaded_file = st.file_uploader("Rasm", type=["png", "jpg", "jpeg", "webp"], label_visibility="collapsed")
     audio_value = st.audio_input("Ovoz", label_visibility="collapsed")
-
-prompt = st.chat_input("😊 Xabar yozing (AI uchun @ai qo'shing)...")
 
 if prompt or audio_value or uploaded_file:
     msg_text = prompt if prompt else ("🎤 Ovozli xabar yuborildi" if audio_value else f"📷 Rasm yuborildi: {uploaded_file.name}")
